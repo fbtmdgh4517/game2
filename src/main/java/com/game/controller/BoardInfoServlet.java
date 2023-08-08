@@ -12,9 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.game.common.CommonRequest;
+import com.game.common.CommonView;
 import com.game.service.BoardInfoService;
 import com.game.service.impl.BoardInfoServiceImpl;
+import com.game.vo.BoardInfoVO;
 
 @WebServlet("/board-info/*")
 public class BoardInfoServlet extends HttpServlet {
@@ -22,20 +23,19 @@ public class BoardInfoServlet extends HttpServlet {
 	private BoardInfoService biService = new BoardInfoServiceImpl();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String uri = CommonRequest.getURI(request, response);
+		String uri = CommonView.getCmd(request);
 		String path = "/WEB-INF/views/board-info";
 		if("list".equals(uri)) {
 			path += "/list.jsp";
-			List<Map<String, String>> list = biService.selectBoardInfoList(null);				
+//			List<BoardInfoVO> list = biService.selectBoardInfoList(null);				
 			if(request.getParameter("searchType") != null && request.getParameter("searchStr") != null) {
 				Map<String, String> param = new HashMap<>();
 				String key = request.getParameter("searchType");
 				String value = request.getParameter("searchStr");
 				param.put("key", key);
-				param.put("value", value);
-				list = biService.selectBoardInfoList(param);				
+				param.put("value", value);				
 			}
-			request.setAttribute("boardInfoList", list);
+			request.setAttribute("boardInfoList", biService.selectBoardInfoList(null));
 		} else if("insert".equals(uri)) {
 			path += "/insert.jsp";
 		} else if("view".equals(uri)) {
@@ -51,7 +51,7 @@ public class BoardInfoServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		String uri = CommonRequest.getURI(request, response);
+		String uri = CommonView.getCmd(request);
 		String path = "/WEB-INF/views/message.jsp";
 		Map<String, String> boardInfo = new HashMap<>();
 		boardInfo.put("biTitle", request.getParameter("biTitle"));

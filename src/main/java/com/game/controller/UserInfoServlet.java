@@ -1,6 +1,7 @@
 package com.game.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,44 +13,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.game.common.CommonRequest;
+import com.game.common.CommonView;
 import com.game.service.UserInfoService;
 import com.game.service.impl.UserInfoServiceImpl;
+import com.google.gson.Gson;
 
 @WebServlet("/user-info/*")
 public class UserInfoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private UserInfoService uiService = new UserInfoServiceImpl();
+	private Gson gson = new Gson();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String uri = CommonRequest.getURI(request, response);
-		String path = "/WEB-INF/views";
-		if("list".equals(uri)) {
-			path += "/user-info/list.jsp";
-			request.setAttribute("userInfoList", uiService.selectUserInfoList(null));
-		} else if("view".equals(uri)) {
-			path += "/user-info/view.jsp";
-			String uiNum = request.getParameter("uiNum");
-			request.setAttribute("userInfo", uiService.selectUserInfo(uiNum));
-		} else if("insert".equals(uri)) {
-			path += "/user-info/insert.jsp";
-		} else if("update".equals(uri)) {
-			path += "/user-info/update.jsp";
-			request.setAttribute("userInfo", uiService.selectUserInfo(request.getParameter("uiNum")));
-		} else if("logout".equals(uri)) {
-			path = "/WEB-INF/views/message.jsp";
-			HttpSession session = request.getSession();
-			session.invalidate();
-			request.setAttribute("msg", "로그아웃 되었습니다.");
-			request.setAttribute("url", "/");
+		String cmd = CommonView.getCmd(request);
+		String json = "";
+		if("list".equals(cmd)) {
+			json = gson.toJson(uiService.selectUserInfoList(null));
+		} else if("view".equals(cmd) || "update".equals(cmd)) {
 		}
-		RequestDispatcher rd = request.getRequestDispatcher(path);
-		rd.forward(request, response);
+		response.setContentType("application/json;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		out.print(json);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		String uri = CommonRequest.getURI(request, response);
+		String uri = CommonView.getCmd(request);
 		String path = "/WEB-INF/views/message.jsp";
 		Map<String, String> userInfo = new HashMap<>();
 		userInfo.put("uiName", request.getParameter("uiName"));
