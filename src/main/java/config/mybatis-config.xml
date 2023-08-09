@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration PUBLIC "//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
 <configuration>
-	<!--mapper에서 매칭할 parmeter Type 별칭 설정
+	<!--mapper에서 매칭할 parmeter Type 별칭 설정 settings 보다 아래에 있어야됨
 	<typeAliases>
 		<typeAlias type="kr.or.iei.student.model.vo.Student" alias="student"/>
 	</typeAliases>

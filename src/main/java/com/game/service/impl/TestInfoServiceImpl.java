@@ -12,12 +12,22 @@ import com.game.vo.TestInfoVO;
 
 public class TestInfoServiceImpl implements TestInfoService {
 	private SqlSessionFactory ssf = MybatisSqlSessionFactory.getSqlSessionFactory();
-	
+
 	@Override
 	public List<TestInfoVO> selectTestInfoList(TestInfoVO test) {
 		try(SqlSession session = ssf.openSession()) {
 			TestInfoMapper tiMapper = session.getMapper(TestInfoMapper.class);
 			return tiMapper.selectTestInfoList(test);
+		} catch(Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public TestInfoVO selectTestInfo(String tiNum) {
+		try(SqlSession session = ssf.openSession()) {
+			TestInfoMapper tiMapper = session.getMapper(TestInfoMapper.class);
+			return tiMapper.selectTestInfo(tiNum);
 		} catch(Exception e) {
 			throw e;
 		}

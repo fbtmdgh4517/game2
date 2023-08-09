@@ -7,4 +7,7 @@
     <select id="selectTestInfoList" resultType="com.game.vo.TestInfoVO">
     	SELECT * FROM TEST_INFO
     </select>
+    <select id="selectTestInfo" resultType="com.game.vo.TestInfoVO">
+    	SELECT * FROM TEST_INFO WHERE TI_NUM=#{tiNum}
+    </select>
 </mapper>

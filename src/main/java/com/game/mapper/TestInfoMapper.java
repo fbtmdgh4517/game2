@@ -6,4 +6,5 @@ import com.game.vo.TestInfoVO;
 
 public interface TestInfoMapper {
 	List<TestInfoVO> selectTestInfoList(TestInfoVO test);
+	TestInfoVO selectTestInfo(String tiNum);
 }

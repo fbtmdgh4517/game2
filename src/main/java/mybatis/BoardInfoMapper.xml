@@ -5,7 +5,7 @@
 
 <mapper namespace="com.game.mapper.BoardInfoMapper">
     <select id="selectBoardInfoList" resultType="com.game.vo.BoardInfoVO">
-        SELECT BI.*, UI.UI_NAMES FROM BOARD_INFO BI
+        SELECT BI.*, UI.UI_NAME FROM BOARD_INFO BI
         INNER JOIN USER_INFO UI ON BI.UI_NUM = UI.UI_NUM
         <where>
         	<if test='searchStr != null and searchStr != ""'>
