@@ -1,5 +1,6 @@
 package com.game.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import com.game.common.CommonView;
 import com.game.service.UserInfoService;
 import com.game.service.impl.UserInfoServiceImpl;
+import com.game.vo.UserInfoVO;
 import com.google.gson.Gson;
 
 @WebServlet("/user-info/*")
@@ -41,20 +43,40 @@ public class UserInfoServlet extends HttpServlet {
 		String uri = CommonView.getCmd(request);
 		String path = "/WEB-INF/views/message.jsp";
 		Map<String, String> userInfo = new HashMap<>();
-		userInfo.put("uiName", request.getParameter("uiName"));
-		userInfo.put("uiId", request.getParameter("uiId"));
-		userInfo.put("uiPwd", request.getParameter("uiPwd"));
-		userInfo.put("uiDesc", request.getParameter("uiDesc"));
-		
+//		userInfo.put("uiName", request.getParameter("uiName"));
+//		userInfo.put("uiId", request.getParameter("uiId"));
+//		userInfo.put("uiPwd", request.getParameter("uiPwd"));
+//		userInfo.put("uiDesc", request.getParameter("uiDesc"));
+		String json = "";
+		UserInfoVO uiVO = new UserInfoVO();
 		if("insert".equals(uri)) {
-			userInfo.put("uiBirth", request.getParameter("uiBirth").replace("-", ""));
-			int result = uiService.insertUserInfo(userInfo);
-			request.setAttribute("msg", "유저 등록 실패");
-			request.setAttribute("url", "/user-info/insert");
-			if(result == 1) {
-				request.setAttribute("msg", "유저 등록 성공");
-				request.setAttribute("url", "/user-info/list");				
+			BufferedReader br = request.getReader();
+			StringBuffer sb = new StringBuffer();
+			String str = null;
+			while((str=br.readLine()) != null) {
+				sb.append(str);
 			}
+			Map<String, String> map = gson.fromJson(sb.toString(), Map.class);
+			uiVO.setUiName(map.get("uiName"));
+			uiVO.setUiId(map.get("uiId"));
+			uiVO.setUiPwd(map.get("uiPwd"));
+			uiVO.setUiDesc(map.get("uiDesc"));
+			uiVO.setUiBirth(map.get("uiBirth").replace("-", ""));
+			System.out.println(uiVO.toString());
+			if(uiService.insertUserInfo(uiVO) == 1) {
+				json = "1";
+			}
+			response.setContentType("application/json;charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			out.print(json);
+//			userInfo.put("uiBirth", request.getParameter("uiBirth").replace("-", ""));
+//			int result = uiService.insertUserInfo(userInfo);
+//			request.setAttribute("msg", "유저 등록 실패");
+//			request.setAttribute("url", "/user-info/insert");
+//			if(result == 1) {
+//				request.setAttribute("msg", "유저 등록 성공");
+//				request.setAttribute("url", "/user-info/list");				
+//			}
 		} else if("delete".equals(uri)) {
 			int result = uiService.deleteUserInfo(request.getParameter("uiNum"));
 			request.setAttribute("msg", "삭제 실패");
@@ -88,8 +110,8 @@ public class UserInfoServlet extends HttpServlet {
 				}
 			}
 		}
-		RequestDispatcher rd = request.getRequestDispatcher(path);
-		rd.forward(request, response);
+//		RequestDispatcher rd = request.getRequestDispatcher(path);
+//		rd.forward(request, response);
 	}
 
 }

@@ -36,8 +36,16 @@ public class MybatisSqlSessionFactory {
 	public static void main(String[] args) {
 		SqlSessionFactory ssf = getSqlSessionFactory();
 		SqlSession session = ssf.openSession();
-		TestInfoMapper tiMapper = session.getMapper(TestInfoMapper.class);
-		System.out.println(tiMapper.selectTestInfoList(null));
+//		TestInfoMapper tiMapper = session.getMapper(TestInfoMapper.class);
+		UserInfoMapper uiMapper = session.getMapper(UserInfoMapper.class);
+//		System.out.println(tiMapper.selectTestInfoList(null));
+		UserInfoVO ui = new UserInfoVO();
+		ui.setUiName("asd");
+		ui.setUiId("asd123");
+		ui.setUiPwd("asd123");
+		ui.setUiDesc("asd123");
+		ui.setUiBirth("20220811");
+		System.out.println(uiMapper.insertUserInfoList(ui));
 //		오픈 세션이 false면 아래것까지 실행해야함
 //		session.commit();
 //		session.close();

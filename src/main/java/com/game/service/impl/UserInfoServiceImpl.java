@@ -33,8 +33,13 @@ public class UserInfoServiceImpl implements UserInfoService {
 	}
 
 	@Override
-	public int insertUserInfo(Map<String, String> userInfo) {
-		return uiDao.insertUserInfo(userInfo);
+	public int insertUserInfo(UserInfoVO user) {
+		try(SqlSession session = ssf.openSession(true)) {
+			UserInfoMapper uiMapper = session.getMapper(UserInfoMapper.class);
+			return uiMapper.insertUserInfoList(user);
+		} catch(Exception e) {
+			throw e;
+		}
 	}
 
 	@Override

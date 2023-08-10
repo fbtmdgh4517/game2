@@ -38,7 +38,7 @@
 		</tbody>
 		<tr>
 			<td colspan="5" align="right">
-				<button class="btn btn-primary" onclick="location.href='/user-info/insert'">등록</button>
+				<button class="btn btn-primary" onclick="location.href='/views/user-info/insert'">등록</button>
 			</td>
 		</tr>
 	</table>

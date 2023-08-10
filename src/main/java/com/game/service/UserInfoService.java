@@ -9,7 +9,7 @@ public interface UserInfoService {
 
 	List<UserInfoVO> selectUserInfoList(UserInfoVO userInfo);
 	Map<String, String> selectUserInfo(String uiNum);
-	int insertUserInfo(Map<String, String> userInfo);
+	int insertUserInfo(UserInfoVO user);
 	int updateUserInfo(Map<String, String> userInfo);
 	int deleteUserInfo(String uiNum);
 	Map<String, String> selectUserInfoById(String uiId);
