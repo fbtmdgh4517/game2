@@ -1,5 +1,6 @@
 package com.game.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.game.common.CommonView;
 import com.google.gson.Gson;
 
 @WebServlet("/list/*")
@@ -34,14 +36,51 @@ public class ListServlet extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String cmd = CommonView.getCmd(request);
+		String json = "";
+		if("list".equals(cmd)) {
+			json = gson.toJson(MOCK_LIST);
+		} else if("one".equals(cmd)) {
+			json = gson.toJson(MOCK_LIST.get(Integer.parseInt(request.getParameter("num"))-1));
+		}
 		response.setContentType("application/json;charset=UTF-8");
-		String json = gson.toJson(MOCK_LIST);
 		PrintWriter out = response.getWriter();
 		out.print(json);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		request.setCharacterEncoding("UTF-8");
+		BufferedReader br = request.getReader();
+		StringBuffer sb = new StringBuffer();
+		String str = null;
+		while((str=br.readLine()) != null) {
+			sb.append(str);
+		}
+		Map<String, String> map = gson.fromJson(sb.toString(), Map.class);
+		String cmd = CommonView.getCmd(request);
+		String json = "0";
+		
+		if("insert".equals(cmd)) {
+			map.put("num", MOCK_LIST.size() + 1 + "");			
+			if(MOCK_LIST.add(map)) {
+				json = "1";
+			}
+		} else if("delete".equals(cmd)) {
+			String num = request.getParameter("num");
+			System.out.println(num);
+			if(MOCK_LIST.remove(Integer.parseInt(num) - 1) != null) {
+				json = "1";
+			}
+		} else if("update".equals(cmd)) {
+			String num = request.getParameter("num");
+			System.out.println(num);
+			if(MOCK_LIST.set(Integer.parseInt(num) - 1, map) != null) {
+				json = "1";
+			}
+		}
+		response.setContentType("application/json;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		out.print(json);
 	}
 
 }
